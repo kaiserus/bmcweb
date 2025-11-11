@@ -1,0 +1,22 @@
+#pragma once
+
+#include <fmt/format.h>
+#include <source_location>
+
+namespace std
+{
+    using fmt::v9::format;              // ✅ 注意 v9
+    using fmt::v9::format_to;
+    using fmt::v9::formatted_size;
+
+    template <class... T>
+    using format_string = fmt::v9::format_string<T...>;
+
+    using format_context = fmt::v9::format_context;
+    using format_parse_context = fmt::v9::format_parse_context;
+
+    template <class T, class Char = char>
+    struct formatter : fmt::v9::formatter<T, Char> {};
+
+    using format_error = fmt::v9::format_error;   // ✅ 关键修复
+}

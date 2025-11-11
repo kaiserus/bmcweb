@@ -1,5 +1,5 @@
 [wrap-git]
-url = https://github.com/openbmc/sdbusplus.git
+url = https://github.com/kaiserus/sdbusplus.git
 revision = HEAD
 
 [provide]

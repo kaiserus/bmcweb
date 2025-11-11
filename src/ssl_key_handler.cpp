@@ -475,7 +475,11 @@ static int alpnSelectProtoCallback(
     SSL* /*unused*/, const unsigned char** out, unsigned char* outlen,
     const unsigned char* in, unsigned int inlen, void* /*unused*/)
 {
+    #if NGHTTP2_VERSION_NUM >= 0x013b00
     int rv = nghttp2_select_alpn(out, outlen, in, inlen);
+    #else
+    int rv = nghttp2_select_next_protocol((unsigned char **)out, outlen, in, inlen);
+    #endif
     if (rv == -1)
     {
         return SSL_TLSEXT_ERR_NOACK;

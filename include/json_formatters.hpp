@@ -6,6 +6,10 @@
 
 #include <format>
 
+#if __GNUC__ <= 12
+#include <fmt/format.h>
+#endif
+
 // Clang-tidy would rather these be static, but using static causes the template
 // specialization to not function.  Ignore the warning.
 // NOLINTBEGIN(readability-convert-member-functions-to-static, cert-dcl58-cpp)
@@ -39,3 +43,36 @@ struct std::formatter<nlohmann::json>
     }
 };
 // NOLINTEND(readability-convert-member-functions-to-static, cert-dcl58-cpp)
+
+#if __GNUC__ <= 12
+// NOLINTBEGIN(readability-convert-member-functions-to-static, cert-dcl58-cpp)
+template <>
+struct fmt::formatter<nlohmann::json::json_pointer>
+{
+    constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+    auto format(const nlohmann::json::json_pointer& ptr, auto& ctx) const
+    {
+        return fmt::format_to(ctx.out(), "{}", ptr.to_string());
+    }
+};
+
+template <>
+struct fmt::formatter<nlohmann::json>
+{
+    static constexpr auto parse(fmt::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+    auto format(const nlohmann::json& json, auto& ctx) const
+    {
+        return fmt::format_to(
+            ctx.out(), "{}",
+            json.dump(-1, ' ', false,
+                      nlohmann::json::error_handler_t::replace));
+    }
+};
+// NOLINTEND(readability-convert-member-functions-to-static, cert-dcl58-cpp)
+#endif

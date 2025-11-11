@@ -25,9 +25,7 @@ summary('Issues', project_issues_url, section: 'Report Issues')
 
 # Validate the c++ Standard
 
-if get_option('cpp_std') != 'c++23'
-    error('This project requires c++23 support')
-endif
+
 
 # Get compiler and default build type
 
@@ -115,9 +113,7 @@ if (cxx.get_id() == 'clang')
 endif
 
 if (cxx.get_id() == 'gcc')
-    if (cxx.version().version_compare('<13.0'))
-        error('This project requires gcc-13 or higher')
-    endif
+
 
     add_project_arguments(
         '-Wformat=2',
@@ -209,6 +205,8 @@ add_project_arguments(
 # Find the dependency modules, if not found use meson wrap to get them
 # automatically during the configure step
 bmcweb_dependencies = []
+
+bmcweb_dependencies += dependency('fmt', required : true)
 
 pam = cxx.find_library('pam', required: true)
 atomic = cxx.find_library('atomic', required: true)
